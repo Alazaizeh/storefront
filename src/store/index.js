@@ -1,69 +1,17 @@
-import React from "react";
-import { Tabs, Tab, Typography, Box } from "@mui/material";
-import PropTypes from "prop-types";
+import { combineReducers, createStore } from "redux";
+import cart from "./cart";
+import categories from "./categories";
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+// This dependecyenables the Redux Dev Tools in your chrome console.
+import { composeWithDevTools } from "redux-devtools-extension";
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+// Combine reducers isn't really necessary when you only have one reducer.
+// But it's good to have it in case you have multiple reducers.
+// And 99.99% of all Redux apps will have more than one reducer.
+let reducers = combineReducers({ cart, categories });
 
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
+const store = () => {
+  return createStore(reducers, composeWithDevTools());
 };
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
-
-export default function BasicTabs() {
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  return (
-    <Box sx={{ width: "100%" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example"
-        >
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
-        </Tabs>
-      </Box>
-      <TabPanel value={value} index={0}>
-        Item One
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        Item Two
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Item Three
-      </TabPanel>
-    </Box>
-  );
-}
+export default store();
